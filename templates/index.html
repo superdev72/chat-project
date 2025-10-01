@@ -337,7 +337,7 @@
         websocket = new WebSocket(wsUrl);
 
         websocket.onopen = function (event) {
-          console.log("WebSocket connected");
+          // WebSocket connected
         };
 
         websocket.onmessage = function (event) {
@@ -346,7 +346,7 @@
         };
 
         websocket.onclose = function (event) {
-          console.log("WebSocket disconnected");
+          // WebSocket disconnected
           // Reconnect after 3 seconds
           setTimeout(connectWebSocket, 3000);
         };
@@ -383,16 +383,9 @@
       }
 
       function sendWebSocketMessage(type, data) {
-        console.log(`Sending WebSocket message: type=${type}, data=`, data);
         if (websocket && websocket.readyState === WebSocket.OPEN) {
           const message = JSON.stringify({ type, ...data });
-          console.log(`WebSocket message:`, message);
           websocket.send(message);
-        } else {
-          console.log(
-            `WebSocket not ready. State:`,
-            websocket ? websocket.readyState : "null"
-          );
         }
       }
 

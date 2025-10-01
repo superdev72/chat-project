@@ -42,7 +42,7 @@ def test_setup():
     # Test models
     try:
         from apps.accounts.models import User  # noqa: F401
-        from apps.chat.models import ChatRoom, Message  # noqa: F401
+        from apps.chat.models import Conversation, Message  # noqa: F401
 
         print("✓ Models imported successfully")
     except Exception as e:
