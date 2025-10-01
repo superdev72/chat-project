@@ -133,7 +133,7 @@ def send_message_view(request, conversation_id):
     if serializer.is_valid():
         # Add conversation to validated data
         serializer.validated_data["conversation"] = conversation
-        message = serializer.save()
+        serializer.save()
 
         # Update conversation timestamp
         conversation.save()

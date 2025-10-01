@@ -36,7 +36,10 @@ class UserRegistrationView(generics.CreateAPIView):
 
         return Response(
             {
-                "message": "User created successfully. Please check your email for verification.",
+                "message": (
+                    "User created successfully. Please check your email "
+                    "for verification."
+                ),
                 "user_id": str(user.id),
             },
             status=status.HTTP_201_CREATED,
@@ -70,6 +73,7 @@ class UserRegistrationView(generics.CreateAPIView):
         except Exception as e:
             # Log the error but don't fail the registration
             import logging
+
             logger = logging.getLogger(__name__)
             logger.warning(f"Failed to send verification email to {user.email}: {e}")
 
@@ -117,11 +121,19 @@ def verify_email_view(request, token):
         # For GET requests (clicking email links), return HTML page
         if request.method == "GET":
             from django.shortcuts import render
-            return render(request, "emails/verification_success.html", {
-                "user": user,
-                "message": "Email verified successfully! You can now log in to your account."
-            })
-        
+
+            return render(
+                request,
+                "emails/verification_success.html",
+                {
+                    "user": user,
+                    "message": (
+                        "Email verified successfully! You can now log in "
+                        "to your account."
+                    ),
+                },
+            )
+
         # For POST requests (API calls), return JSON
         return Response(
             {"message": "Email verified successfully"}, status=status.HTTP_200_OK
@@ -181,7 +193,5 @@ def logout_view(request):
     except Exception:
         # Token might not exist, that's okay
         pass
-    
-    return Response(
-        {"message": "Logged out successfully"}, status=status.HTTP_200_OK
-    )
+
+    return Response({"message": "Logged out successfully"}, status=status.HTTP_200_OK)

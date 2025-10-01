@@ -1,8 +1,9 @@
 import json
 from datetime import datetime
 
-from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 
@@ -31,9 +32,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.user_group_name = f"user_{self.user_id}"
 
         # Join user group
-        await self.channel_layer.group_add(
-            self.user_group_name, self.channel_name
-        )
+        await self.channel_layer.group_add(self.user_group_name, self.channel_name)
 
         await self.accept()
 
@@ -44,14 +43,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "type": "user_online",
                 "user_id": self.user_id,
                 "user_data": await self.get_user_data(self.user),
-            }
+            },
         )
 
     async def disconnect(self, close_code):
         # Leave user group
-        await self.channel_layer.group_discard(
-            self.user_group_name, self.channel_name
-        )
+        await self.channel_layer.group_discard(self.user_group_name, self.channel_name)
 
         # Notify other users that this user is offline
         await self.channel_layer.group_send(
@@ -59,7 +56,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 "type": "user_offline",
                 "user_id": self.user_id,
-            }
+            },
         )
 
     async def receive(self, text_data):
@@ -85,25 +82,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         if not conversation_id or not content:
             await self.send(
-                text_data=json.dumps(
-                    {"error": "Missing conversation_id or content"}
-                )
+                text_data=json.dumps({"error": "Missing conversation_id or content"})
             )
             return
 
         # Get conversation and validate access
         conversation = await self.get_conversation(conversation_id)
         if not conversation:
-            await self.send(
-                text_data=json.dumps({"error": "Conversation not found"})
-            )
+            await self.send(text_data=json.dumps({"error": "Conversation not found"}))
             return
 
         # Check if user is part of this conversation
         if not await self.is_user_in_conversation(conversation, self.user):
-            await self.send(
-                text_data=json.dumps({"error": "Access denied"})
-            )
+            await self.send(text_data=json.dumps({"error": "Access denied"}))
             return
 
         # Create message in database and Redis
@@ -120,12 +111,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         }
 
         # Send to both users
-        await self.channel_layer.group_send(
-            self.user_group_name, message_payload
-        )
-        await self.channel_layer.group_send(
-            other_user_group, message_payload
-        )
+        await self.channel_layer.group_send(self.user_group_name, message_payload)
+        await self.channel_layer.group_send(other_user_group, message_payload)
 
     async def handle_typing(self, data):
         conversation_id = data.get("conversation_id")
@@ -146,7 +133,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "conversation_id": conversation_id,
                 "user_id": self.user_id,
                 "user_name": self.user.full_name,
-            }
+            },
         )
 
     async def handle_stop_typing(self, data):
@@ -167,7 +154,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "type": "user_stop_typing",
                 "conversation_id": conversation_id,
                 "user_id": self.user_id,
-            }
+            },
         )
 
     # WebSocket event handlers

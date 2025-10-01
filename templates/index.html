@@ -41,47 +41,33 @@
   </head>
   <body class="bg-gray-100 min-h-screen">
     <!-- Login/Register Forms -->
-    <div
-      id="auth-container"
-      class="min-h-screen flex items-center justify-center gradient-bg"
-    >
+    <div id="auth-container"
+         class="min-h-screen flex items-center justify-center gradient-bg">
       <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <!-- Login Form -->
         <div id="login-form" class="space-y-6">
-          <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
-            Login
-          </h2>
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Login</h2>
           <form id="login-form-element">
             <div class="mb-4">
-              <label
-                for="login-email"
-                class="block text-sm font-medium text-gray-700 mb-2"
-                >Email</label
-              >
-              <input
-                type="email"
-                id="login-email"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <label for="login-email"
+                     class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <input type="email"
+                     id="login-email"
+                     required
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div class="mb-6">
-              <label
-                for="login-password"
-                class="block text-sm font-medium text-gray-700 mb-2"
-                >Password</label
-              >
-              <input
-                type="password"
-                id="login-password"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <label for="login-password"
+                     class="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <input type="password"
+                     id="login-password"
+                     required
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
-            <button
-              type="submit"
-              class="w-full bg-primary hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
-            >
+            <button type="submit"
+                    class="w-full bg-primary hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
               Login
             </button>
           </form>
@@ -92,113 +78,83 @@
             </button>
           </p>
         </div>
-
         <!-- Register Form -->
         <div id="register-form" class="space-y-6 hidden">
-          <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
-            Register
-          </h2>
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">Register</h2>
           <form id="register-form-element">
             <div class="mb-4">
-              <label
-                for="register-first-name"
-                class="block text-sm font-medium text-gray-700 mb-2"
-                >First Name</label
-              >
-              <input
-                type="text"
-                id="register-first-name"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <label for="register-first-name"
+                     class="block text-sm font-medium text-gray-700 mb-2">
+                First Name
+              </label>
+              <input type="text"
+                     id="register-first-name"
+                     required
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div class="mb-4">
-              <label
-                for="register-last-name"
-                class="block text-sm font-medium text-gray-700 mb-2"
-                >Last Name</label
-              >
-              <input
-                type="text"
-                id="register-last-name"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <label for="register-last-name"
+                     class="block text-sm font-medium text-gray-700 mb-2">
+                Last Name
+              </label>
+              <input type="text"
+                     id="register-last-name"
+                     required
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div class="mb-4">
-              <label
-                for="register-email"
-                class="block text-sm font-medium text-gray-700 mb-2"
-                >Email</label
-              >
-              <input
-                type="email"
-                id="register-email"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <label for="register-email"
+                     class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <input type="email"
+                     id="register-email"
+                     required
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div class="mb-4">
-              <label
-                for="register-username"
-                class="block text-sm font-medium text-gray-700 mb-2"
-                >Username</label
-              >
-              <input
-                type="text"
-                id="register-username"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <label for="register-username"
+                     class="block text-sm font-medium text-gray-700 mb-2">
+                Username
+              </label>
+              <input type="text"
+                     id="register-username"
+                     required
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
             <div class="mb-4">
-              <label
-                for="register-password"
-                class="block text-sm font-medium text-gray-700 mb-2"
-                >Password</label
-              >
-              <input
-                type="password"
-                id="register-password"
-                required
-                minlength="8"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
-              <p class="text-xs text-gray-500 mt-1">
-                Password must be at least 8 characters long
-              </p>
+              <label for="register-password"
+                     class="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <input type="password"
+                     id="register-password"
+                     required
+                     minlength="8"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+              <p class="text-xs text-gray-500 mt-1">Password must be at least 8 characters long</p>
             </div>
             <div class="mb-4">
-              <label
-                for="register-password-confirm"
-                class="block text-sm font-medium text-gray-700 mb-2"
-                >Confirm Password</label
-              >
-              <input
-                type="password"
-                id="register-password-confirm"
-                required
-                minlength="8"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              />
+              <label for="register-password-confirm"
+                     class="block text-sm font-medium text-gray-700 mb-2">
+                Confirm Password
+              </label>
+              <input type="password"
+                     id="register-password-confirm"
+                     required
+                     minlength="8"
+                     class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
             </div>
-            <button
-              type="submit"
-              class="w-full bg-primary hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
-            >
+            <button type="submit"
+                    class="w-full bg-primary hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
               Register
             </button>
           </form>
           <p class="text-center text-gray-600">
             Already have an account?
-            <button id="show-login" class="text-primary hover:underline">
-              Login Instead
-            </button>
+            <button id="show-login" class="text-primary hover:underline">Login Instead</button>
           </p>
         </div>
       </div>
     </div>
-
     <!-- Chat Interface -->
     <div id="chat-container" class="hidden h-screen flex">
       <!-- Sidebar -->
@@ -208,18 +164,9 @@
           <div class="flex items-center justify-between">
             <h1 class="text-xl font-bold text-gray-800">Chat</h1>
             <button id="logout-btn" class="text-gray-500 hover:text-gray-700">
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-                ></path>
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                </path>
               </svg>
             </button>
           </div>
@@ -229,7 +176,6 @@
             </p>
           </div>
         </div>
-
         <!-- Users List -->
         <div class="flex-1 overflow-y-auto">
           <div class="p-4">
@@ -240,15 +186,12 @@
           </div>
         </div>
       </div>
-
       <!-- Chat Area -->
       <div class="flex-1 flex flex-col">
         <!-- Chat Header -->
         <div id="chat-header" class="p-4 border-b border-gray-200 bg-white">
           <div class="flex items-center">
-            <div
-              class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold"
-            >
+            <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold">
               <span id="chat-user-initial">?</span>
             </div>
             <div class="ml-3">
@@ -259,42 +202,30 @@
             </div>
           </div>
         </div>
-
         <!-- Messages Area -->
-        <div
-          id="messages-container"
-          class="flex-1 overflow-y-auto p-4 bg-gray-50"
-        >
+        <div id="messages-container" class="flex-1 overflow-y-auto p-4 bg-gray-50">
           <div id="messages-list" class="space-y-4">
             <div class="text-center text-gray-500 py-8">
               <p>Select a user from the sidebar to start chatting</p>
             </div>
           </div>
         </div>
-
         <!-- Message Input -->
-        <div
-          id="message-input-container"
-          class="p-4 bg-white border-t border-gray-200 hidden"
-        >
+        <div id="message-input-container"
+             class="p-4 bg-white border-t border-gray-200 hidden">
           <form id="message-form" class="flex space-x-2">
-            <input
-              type="text"
-              id="message-input"
-              placeholder="Type a message..."
-              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-            />
-            <button
-              type="submit"
-              class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
-            >
+            <input type="text"
+                   id="message-input"
+                   placeholder="Type a message..."
+                   class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+            <button type="submit"
+                    class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors">
               Send
             </button>
           </form>
         </div>
       </div>
     </div>
-
     <script>
       let authToken = localStorage.getItem("authToken") || null;
       let currentUser = JSON.parse(
@@ -606,13 +537,9 @@
           }`;
 
           messageDiv.innerHTML = `
-            <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg message-bubble ${
-              isOwnMessage ? "bg-primary text-white" : "bg-white text-gray-800"
-            }">
+            <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg message-bubble ${ isOwnMessage ? "bg-primary text-white" : "bg-white text-gray-800" }">
               <p class="text-sm">${message.content}</p>
-              <p class="text-xs mt-1 ${
-                isOwnMessage ? "text-blue-100" : "text-gray-500"
-              }">
+              <p class="text-xs mt-1 ${ isOwnMessage ? "text-blue-100" : "text-gray-500" }">
                 ${new Date(message.timestamp).toLocaleTimeString()}
               </p>
             </div>
@@ -660,13 +587,9 @@
         }`;
 
         messageDiv.innerHTML = `
-          <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg message-bubble ${
-            isOwnMessage ? "bg-primary text-white" : "bg-white text-gray-800"
-          }">
+          <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg message-bubble ${ isOwnMessage ? "bg-primary text-white" : "bg-white text-gray-800" }">
             <p class="text-sm">${message.content}</p>
-            <p class="text-xs mt-1 ${
-              isOwnMessage ? "text-blue-100" : "text-gray-500"
-            }">
+            <p class="text-xs mt-1 ${ isOwnMessage ? "text-blue-100" : "text-gray-500" }">
               ${new Date(message.timestamp).toLocaleTimeString()}
             </p>
           </div>

@@ -1,6 +1,6 @@
 [tool.black]
 line-length = 88
-target-version = ['py38', 'py39', 'py310', 'py311']
+target-version = ['py311']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
@@ -11,11 +11,9 @@ extend-exclude = '''
   | \.mypy_cache
   | \.tox
   | \.venv
-  | venv
-  | _build
-  | buck-out
   | build
   | dist
+  | migrations
 )/
 '''
 
@@ -24,19 +22,27 @@ profile = "black"
 multi_line_output = 3
 line_length = 88
 known_django = "django"
-known_first_party = ["apps"]
+known_first_party = ["apps", "chat_project"]
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "DJANGO", "FIRSTPARTY", "LOCALFOLDER"]
 skip_glob = ["*/migrations/*"]
 
 [tool.flake8]
 max-line-length = 88
-extend-ignore = ["E203", "W503", "E501"]
+extend-ignore = ["E203", "W503"]
 exclude = [
     ".git",
     "__pycache__",
-    "*/migrations/*",
-    "venv",
+    "migrations",
     ".venv",
+    "venv",
+    ".tox",
+    ".eggs",
+    "*.egg",
     "build",
-    "dist"
+    "dist",
 ]
+
+[tool.djlint]
+profile = "django"
+indent = 2
+max_line_length = 88

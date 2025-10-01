@@ -62,7 +62,8 @@ class UserLoginSerializer(serializers.Serializer):
                 raise serializers.ValidationError("Invalid credentials")
             if not user.is_verified:
                 raise serializers.ValidationError(
-                    "Please check your mailbox and verify your account by clicking the link there."
+                    "Please check your mailbox and verify your account "
+                    "by clicking the link there."
                 )
             attrs["user"] = user
             return attrs

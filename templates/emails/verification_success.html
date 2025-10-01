@@ -12,61 +12,42 @@
     </style>
   </head>
   <body class="gradient-bg min-h-screen flex items-center justify-center p-4">
-    <div
-      class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 text-center"
-    >
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8 text-center">
       <!-- Success Icon -->
       <div class="mb-6">
-        <div
-          class="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center"
-        >
-          <svg
-            class="w-8 h-8 text-green-600"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 13l4 4L19 7"
-            ></path>
+        <div class="mx-auto w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+          <svg class="w-8 h-8 text-green-600"
+               fill="none"
+               stroke="currentColor"
+               viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+            </path>
           </svg>
         </div>
       </div>
-
       <!-- Success Message -->
       <h1 class="text-2xl font-bold text-gray-800 mb-4">Email Verified!</h1>
       <p class="text-gray-600 mb-6">{{ message }}</p>
-
       <!-- User Info -->
       <div class="bg-gray-50 rounded-lg p-4 mb-6">
         <p class="text-sm text-gray-500 mb-1">Welcome,</p>
         <p class="font-semibold text-gray-800">{{ user.full_name }}</p>
         <p class="text-sm text-gray-600">{{ user.email }}</p>
       </div>
-
       <!-- Action Buttons -->
       <div class="space-y-3">
-        <a
-          href="/"
-          class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition duration-200 font-medium inline-block"
-        >
+        <a href="/"
+           class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition duration-200 font-medium inline-block">
           Go to Login
         </a>
         <p class="text-sm text-gray-500">
           You can now log in to your account and start chatting!
         </p>
       </div>
-
       <!-- Footer -->
       <div class="mt-8 pt-6 border-t border-gray-200">
-        <p class="text-xs text-gray-500">
-          © 2024 Chat Application. All rights reserved.
-        </p>
+        <p class="text-xs text-gray-500">© 2024 Chat Application. All rights reserved.</p>
       </div>
     </div>
   </body>
 </html>
-
