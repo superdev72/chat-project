@@ -1,0 +1,45 @@
+version: "3.8"
+
+services:
+  db-test:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: test_chatdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d test_chatdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis-test:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web-test:
+    build: .
+    command: python manage.py test
+    volumes:
+      - .:/app
+    depends_on:
+      db-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    environment:
+      - DEBUG=True
+      - SECRET_KEY=test-secret-key
+      - DATABASE_URL=postgresql://postgres:postgres@db-test:5432/test_chatdb
+      - REDIS_URL=redis://redis-test:6379/0
+      - EMAIL_HOST=localhost
+      - EMAIL_PORT=1025
+      - SITE_URL=http://localhost:8000

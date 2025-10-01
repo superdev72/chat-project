@@ -1,0 +1,131 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: test_chatdb
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run code quality checks
+        run: |
+          # Install code quality tools
+          pip install black flake8 isort djlint
+
+          # Run Black formatter check
+          black --check --diff .
+
+          # Run isort import sorting check
+          isort --check-only --diff .
+
+          # Run flake8 linting
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=88 --statistics
+
+          # Run djlint template linting
+          djlint --check .
+
+      - name: Run tests
+        env:
+          DEBUG: True
+          SECRET_KEY: test-secret-key
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_chatdb
+          REDIS_URL: redis://localhost:6379/0
+          EMAIL_HOST: localhost
+          EMAIL_PORT: 1025
+          SITE_URL: http://localhost:8000
+        run: |
+          python manage.py makemigrations
+          python manage.py migrate
+          python manage.py test
+
+      - name: Test with Docker Compose
+        run: |
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml up --build -d
+          sleep 30
+          docker-compose -f docker-compose.yml -f docker-compose.test.yml down
+
+  security:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install safety bandit
+
+      - name: Run safety check
+        run: safety check
+
+      - name: Run bandit security check
+        run: bandit -r . -f json -o bandit-report.json || true
+
+  docker:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t chat-app:test .
+
+      - name: Test Docker image
+        run: |
+          docker run --rm chat-app:test python manage.py check

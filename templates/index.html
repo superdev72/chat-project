@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-Time Chat Application</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#667eea",
+              secondary: "#764ba2",
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .gradient-bg {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .hidden {
+        display: none !important;
+      }
+      .message-bubble {
+        animation: slideIn 0.3s ease-out;
+      }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <!-- Login/Register Forms -->
+    <div
+      id="auth-container"
+      class="min-h-screen flex items-center justify-center gradient-bg"
+    >
+      <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <!-- Login Form -->
+        <div id="login-form" class="space-y-6">
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+            Login
+          </h2>
+          <form id="login-form-element">
+            <div class="mb-4">
+              <label
+                for="login-email"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Email</label
+              >
+              <input
+                type="email"
+                id="login-email"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <div class="mb-6">
+              <label
+                for="login-password"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Password</label
+              >
+              <input
+                type="password"
+                id="login-password"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-primary hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
+            >
+              Login
+            </button>
+          </form>
+          <p class="text-center text-gray-600">
+            Don't have an account?
+            <button id="show-register" class="text-primary hover:underline">
+              Register Instead
+            </button>
+          </p>
+        </div>
+
+        <!-- Register Form -->
+        <div id="register-form" class="space-y-6 hidden">
+          <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+            Register
+          </h2>
+          <form id="register-form-element">
+            <div class="mb-4">
+              <label
+                for="register-first-name"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >First Name</label
+              >
+              <input
+                type="text"
+                id="register-first-name"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <div class="mb-4">
+              <label
+                for="register-last-name"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Last Name</label
+              >
+              <input
+                type="text"
+                id="register-last-name"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <div class="mb-4">
+              <label
+                for="register-email"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Email</label
+              >
+              <input
+                type="email"
+                id="register-email"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <div class="mb-4">
+              <label
+                for="register-username"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Username</label
+              >
+              <input
+                type="text"
+                id="register-username"
+                required
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <div class="mb-4">
+              <label
+                for="register-password"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Password</label
+              >
+              <input
+                type="password"
+                id="register-password"
+                required
+                minlength="8"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                Password must be at least 8 characters long
+              </p>
+            </div>
+            <div class="mb-4">
+              <label
+                for="register-password-confirm"
+                class="block text-sm font-medium text-gray-700 mb-2"
+                >Confirm Password</label
+              >
+              <input
+                type="password"
+                id="register-password-confirm"
+                required
+                minlength="8"
+                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-primary hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors"
+            >
+              Register
+            </button>
+          </form>
+          <p class="text-center text-gray-600">
+            Already have an account?
+            <button id="show-login" class="text-primary hover:underline">
+              Login Instead
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chat Interface -->
+    <div id="chat-container" class="hidden h-screen flex">
+      <!-- Sidebar -->
+      <div class="w-1/3 bg-white border-r border-gray-200 flex flex-col">
+        <!-- Header -->
+        <div class="p-4 border-b border-gray-200">
+          <div class="flex items-center justify-between">
+            <h1 class="text-xl font-bold text-gray-800">Chat</h1>
+            <button id="logout-btn" class="text-gray-500 hover:text-gray-700">
+              <svg
+                class="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          <div class="mt-4">
+            <p class="text-sm text-gray-600">
+              Welcome, <span id="user-name"></span>!
+            </p>
+          </div>
+        </div>
+
+        <!-- Users List -->
+        <div class="flex-1 overflow-y-auto">
+          <div class="p-4">
+            <h3 class="text-sm font-medium text-gray-700 mb-3">All Users</h3>
+            <div id="users-list" class="space-y-2">
+              <!-- Users will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Area -->
+      <div class="flex-1 flex flex-col">
+        <!-- Chat Header -->
+        <div id="chat-header" class="p-4 border-b border-gray-200 bg-white">
+          <div class="flex items-center">
+            <div
+              class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold"
+            >
+              <span id="chat-user-initial">?</span>
+            </div>
+            <div class="ml-3">
+              <h3 class="font-medium text-gray-800" id="chat-user-name">
+                Select a user to start chatting
+              </h3>
+              <p class="text-sm text-gray-500" id="chat-user-email"></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div
+          id="messages-container"
+          class="flex-1 overflow-y-auto p-4 bg-gray-50"
+        >
+          <div id="messages-list" class="space-y-4">
+            <div class="text-center text-gray-500 py-8">
+              <p>Select a user from the sidebar to start chatting</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Message Input -->
+        <div
+          id="message-input-container"
+          class="p-4 bg-white border-t border-gray-200 hidden"
+        >
+          <form id="message-form" class="flex space-x-2">
+            <input
+              type="text"
+              id="message-input"
+              placeholder="Type a message..."
+              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+            <button
+              type="submit"
+              class="bg-primary hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+            >
+              Send
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let authToken = localStorage.getItem("authToken") || null;
+      let currentUser = JSON.parse(
+        localStorage.getItem("currentUser") || "null"
+      );
+      let currentConversationId = null;
+      let currentChatUserId = null;
+      let websocket = null;
+      let typingTimer = null;
+
+      // API call helper
+      async function apiCall(url, options = {}) {
+        const defaultOptions = {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        };
+
+        if (authToken) {
+          defaultOptions.headers["Authorization"] = `Token ${authToken}`;
+        }
+
+        const response = await fetch(url, { ...defaultOptions, ...options });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.detail || `HTTP ${response.status}`);
+        }
+
+        return await response.json();
+      }
+
+      // WebSocket functions
+      function connectWebSocket() {
+        if (!currentUser || !authToken) return;
+
+        const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const wsUrl = `${protocol}//${window.location.host}/ws/chat/${currentUser.id}/?token=${authToken}`;
+
+        websocket = new WebSocket(wsUrl);
+
+        websocket.onopen = function (event) {
+          console.log("WebSocket connected");
+        };
+
+        websocket.onmessage = function (event) {
+          const data = JSON.parse(event.data);
+          handleWebSocketMessage(data);
+        };
+
+        websocket.onclose = function (event) {
+          console.log("WebSocket disconnected");
+          // Reconnect after 3 seconds
+          setTimeout(connectWebSocket, 3000);
+        };
+
+        websocket.onerror = function (error) {
+          console.error("WebSocket error:", error);
+        };
+      }
+
+      function handleWebSocketMessage(data) {
+        switch (data.type) {
+          case "new_message":
+            if (data.conversation_id === currentConversationId) {
+              displayNewMessage(data.message);
+            }
+            break;
+          case "user_typing":
+            if (data.conversation_id === currentConversationId) {
+              showTypingIndicator(data.user_name);
+            }
+            break;
+          case "user_stop_typing":
+            if (data.conversation_id === currentConversationId) {
+              hideTypingIndicator();
+            }
+            break;
+          case "user_online":
+            addUserToSidebar(data.user_data);
+            break;
+          case "user_offline":
+            removeUserFromSidebar(data.user_id);
+            break;
+        }
+      }
+
+      function sendWebSocketMessage(type, data) {
+        console.log(`Sending WebSocket message: type=${type}, data=`, data);
+        if (websocket && websocket.readyState === WebSocket.OPEN) {
+          const message = JSON.stringify({ type, ...data });
+          console.log(`WebSocket message:`, message);
+          websocket.send(message);
+        } else {
+          console.log(
+            `WebSocket not ready. State:`,
+            websocket ? websocket.readyState : "null"
+          );
+        }
+      }
+
+      // Show alert messages
+      function showAlert(message, type = "error") {
+        const alertDiv = document.createElement("div");
+        alertDiv.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${
+          type === "success" ? "bg-green-500" : "bg-red-500"
+        } text-white`;
+        alertDiv.textContent = message;
+        document.body.appendChild(alertDiv);
+
+        setTimeout(() => {
+          alertDiv.remove();
+        }, 3000);
+      }
+
+      // Authentication functions
+      async function login(email, password) {
+        try {
+          const response = await apiCall("/api/auth/login/", {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+          });
+
+          authToken = response.token;
+          currentUser = response.user;
+
+          // Save to localStorage
+          localStorage.setItem("authToken", authToken);
+          localStorage.setItem("currentUser", JSON.stringify(currentUser));
+
+          document.getElementById("auth-container").classList.add("hidden");
+          document.getElementById("chat-container").classList.remove("hidden");
+
+          document.getElementById("user-name").textContent =
+            currentUser.full_name;
+          loadUsers();
+          connectWebSocket();
+
+          showAlert("Login successful!", "success");
+        } catch (error) {
+          showAlert(`Login failed: ${error.message}`);
+        }
+      }
+
+      async function register(
+        firstName,
+        lastName,
+        email,
+        username,
+        password,
+        passwordConfirm
+      ) {
+        try {
+          await apiCall("/api/auth/register/", {
+            method: "POST",
+            body: JSON.stringify({
+              first_name: firstName,
+              last_name: lastName,
+              email,
+              username,
+              password,
+              password_confirm: passwordConfirm,
+            }),
+          });
+
+          showAlert(
+            "Registration successful! Please check your email for verification.",
+            "success"
+          );
+          showLoginForm();
+        } catch (error) {
+          showAlert(`Registration failed: ${error.message}`);
+        }
+      }
+
+      async function logout() {
+        try {
+          await apiCall("/api/auth/logout/", {
+            method: "POST",
+          });
+        } catch (error) {
+          console.error("Logout error:", error);
+        }
+
+        authToken = null;
+        currentUser = null;
+        currentConversationId = null;
+        currentChatUserId = null;
+
+        // Clear localStorage
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("currentUser");
+
+        if (websocket) {
+          websocket.close();
+          websocket = null;
+        }
+
+        document.getElementById("auth-container").classList.remove("hidden");
+        document.getElementById("chat-container").classList.add("hidden");
+
+        showAlert("Logged out successfully!", "success");
+      }
+
+      // User management
+      async function loadUsers() {
+        try {
+          const response = await apiCall("/api/chat/users/");
+          const users = response.results || [];
+
+          const usersList = document.getElementById("users-list");
+          usersList.innerHTML = "";
+
+          users.forEach((user) => {
+            const userDiv = document.createElement("div");
+            userDiv.className =
+              "p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors";
+            userDiv.innerHTML = `
+              <div class="flex items-center">
+                <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm font-bold">
+                  ${user.full_name.charAt(0).toUpperCase()}
+                </div>
+                <div class="ml-3">
+                  <p class="font-medium text-gray-800">${user.full_name}</p>
+                  <p class="text-sm text-gray-500">${user.email}</p>
+                </div>
+              </div>
+            `;
+
+            userDiv.addEventListener("click", () => selectUser(user));
+            usersList.appendChild(userDiv);
+          });
+        } catch (error) {
+          showAlert(`Failed to load users: ${error.message}`);
+        }
+      }
+
+      async function selectUser(user) {
+        currentChatUserId = user.id;
+
+        // Update chat header
+        document.getElementById("chat-user-name").textContent = user.full_name;
+        document.getElementById("chat-user-email").textContent = user.email;
+        document.getElementById("chat-user-initial").textContent =
+          user.full_name.charAt(0).toUpperCase();
+
+        // Show message input
+        document
+          .getElementById("message-input-container")
+          .classList.remove("hidden");
+
+        // Load or create conversation
+        await loadConversation(user.id);
+      }
+
+      async function loadConversation(userId) {
+        try {
+          // Try to get existing conversation
+          const response = await apiCall(`/api/chat/conversations/${userId}/`);
+          currentConversationId = response.id;
+          await loadMessages();
+        } catch (error) {
+          if (error.message.includes("404")) {
+            // Create new conversation
+            try {
+              const response = await apiCall(
+                `/api/chat/conversations/${userId}/`,
+                {
+                  method: "POST",
+                }
+              );
+              currentConversationId = response.id;
+              await loadMessages();
+            } catch (createError) {
+              showAlert(
+                `Failed to create conversation: ${createError.message}`
+              );
+            }
+          } else {
+            showAlert(`Failed to load conversation: ${error.message}`);
+          }
+        }
+      }
+
+      async function loadMessages() {
+        if (!currentConversationId) return;
+
+        try {
+          const messages = await apiCall(
+            `/api/chat/conversations/${currentConversationId}/messages/`
+          );
+          displayMessages(messages);
+        } catch (error) {
+          showAlert(`Failed to load messages: ${error.message}`);
+        }
+      }
+
+      function displayMessages(messages) {
+        const messagesList = document.getElementById("messages-list");
+        messagesList.innerHTML = "";
+
+        if (messages.length === 0) {
+          messagesList.innerHTML = `
+            <div class="text-center text-gray-500 py-8">
+              <p>No messages yet. Start the conversation!</p>
+            </div>
+          `;
+          return;
+        }
+
+        messages.forEach((message) => {
+          const isOwnMessage = message.sender_id === currentUser.id;
+          const messageDiv = document.createElement("div");
+          messageDiv.className = `flex ${
+            isOwnMessage ? "justify-end" : "justify-start"
+          }`;
+
+          messageDiv.innerHTML = `
+            <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg message-bubble ${
+              isOwnMessage ? "bg-primary text-white" : "bg-white text-gray-800"
+            }">
+              <p class="text-sm">${message.content}</p>
+              <p class="text-xs mt-1 ${
+                isOwnMessage ? "text-blue-100" : "text-gray-500"
+              }">
+                ${new Date(message.timestamp).toLocaleTimeString()}
+              </p>
+            </div>
+          `;
+
+          messagesList.appendChild(messageDiv);
+        });
+
+        // Scroll to bottom
+        const messagesContainer = document.getElementById("messages-container");
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      async function sendMessage(content) {
+        if (!currentConversationId || !content.trim()) return;
+
+        try {
+          // Send via WebSocket only - no HTTP API calls
+          sendWebSocketMessage("send_message", {
+            conversation_id: currentConversationId,
+            content: content.trim(),
+          });
+
+          // Clear input
+          document.getElementById("message-input").value = "";
+        } catch (error) {
+          showAlert(`Failed to send message: ${error.message}`);
+        }
+      }
+
+      // Real-time UI helper functions
+      function displayNewMessage(message) {
+        const messagesList = document.getElementById("messages-list");
+
+        // Remove "no messages" placeholder if it exists
+        const placeholder = messagesList.querySelector(".text-center");
+        if (placeholder) {
+          placeholder.remove();
+        }
+
+        const isOwnMessage = message.sender_id === currentUser.id;
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `flex ${
+          isOwnMessage ? "justify-end" : "justify-start"
+        }`;
+
+        messageDiv.innerHTML = `
+          <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg message-bubble ${
+            isOwnMessage ? "bg-primary text-white" : "bg-white text-gray-800"
+          }">
+            <p class="text-sm">${message.content}</p>
+            <p class="text-xs mt-1 ${
+              isOwnMessage ? "text-blue-100" : "text-gray-500"
+            }">
+              ${new Date(message.timestamp).toLocaleTimeString()}
+            </p>
+          </div>
+        `;
+
+        messagesList.appendChild(messageDiv);
+
+        // Scroll to bottom
+        const messagesContainer = document.getElementById("messages-container");
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      function addUserToSidebar(userData) {
+        const usersList = document.getElementById("users-list");
+
+        // Check if user already exists
+        const existingUser = usersList.querySelector(
+          `[data-user-id="${userData.id}"]`
+        );
+        if (existingUser) return;
+
+        const userDiv = document.createElement("div");
+        userDiv.className =
+          "p-3 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors";
+        userDiv.setAttribute("data-user-id", userData.id);
+        userDiv.innerHTML = `
+          <div class="flex items-center">
+            <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+              ${userData.full_name.charAt(0).toUpperCase()}
+            </div>
+            <div class="ml-3">
+              <p class="font-medium text-gray-800">${userData.full_name}</p>
+              <p class="text-sm text-gray-500">${userData.email}</p>
+            </div>
+            <div class="ml-auto">
+              <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+            </div>
+          </div>
+        `;
+
+        userDiv.addEventListener("click", () => selectUser(userData));
+        usersList.appendChild(userDiv);
+      }
+
+      function removeUserFromSidebar(userId) {
+        const userElement = document.querySelector(
+          `[data-user-id="${userId}"]`
+        );
+        if (userElement) {
+          userElement.remove();
+        }
+      }
+
+      function showTypingIndicator(userName) {
+        const messagesList = document.getElementById("messages-list");
+        let typingDiv = document.getElementById("typing-indicator");
+
+        if (!typingDiv) {
+          typingDiv = document.createElement("div");
+          typingDiv.id = "typing-indicator";
+          typingDiv.className = "flex justify-start";
+          typingDiv.innerHTML = `
+            <div class="max-w-xs px-4 py-2 rounded-lg bg-gray-200 text-gray-600">
+              <p class="text-sm">${userName} is typing...</p>
+            </div>
+          `;
+          messagesList.appendChild(typingDiv);
+        }
+
+        // Scroll to bottom
+        const messagesContainer = document.getElementById("messages-container");
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+
+      function hideTypingIndicator() {
+        const typingDiv = document.getElementById("typing-indicator");
+        if (typingDiv) {
+          typingDiv.remove();
+        }
+      }
+
+      // Check if user is already logged in
+      function checkExistingLogin() {
+        if (authToken && currentUser) {
+          // User is already logged in, show chat interface
+          document.getElementById("auth-container").classList.add("hidden");
+          document.getElementById("chat-container").classList.remove("hidden");
+
+          document.getElementById("user-name").textContent =
+            currentUser.full_name;
+          loadUsers();
+          connectWebSocket();
+        }
+      }
+
+      // Form switching
+      function showLoginForm() {
+        document.getElementById("login-form").classList.remove("hidden");
+        document.getElementById("register-form").classList.add("hidden");
+      }
+
+      function showRegisterForm() {
+        document.getElementById("login-form").classList.add("hidden");
+        document.getElementById("register-form").classList.remove("hidden");
+      }
+
+      // Event listeners
+      document
+        .getElementById("login-form-element")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const email = document.getElementById("login-email").value;
+          const password = document.getElementById("login-password").value;
+          await login(email, password);
+        });
+
+      document
+        .getElementById("register-form-element")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const firstName = document.getElementById(
+            "register-first-name"
+          ).value;
+          const lastName = document.getElementById("register-last-name").value;
+          const email = document.getElementById("register-email").value;
+          const username = document.getElementById("register-username").value;
+          const password = document.getElementById("register-password").value;
+          const passwordConfirm = document.getElementById(
+            "register-password-confirm"
+          ).value;
+          await register(
+            firstName,
+            lastName,
+            email,
+            username,
+            password,
+            passwordConfirm
+          );
+        });
+
+      document
+        .getElementById("message-form")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const content = document.getElementById("message-input").value;
+          await sendMessage(content);
+        });
+
+      // Typing indicators
+      document
+        .getElementById("message-input")
+        .addEventListener("input", (e) => {
+          if (currentConversationId) {
+            sendWebSocketMessage("typing", {
+              conversation_id: currentConversationId,
+            });
+
+            // Clear existing timer
+            if (typingTimer) {
+              clearTimeout(typingTimer);
+            }
+
+            // Set timer to stop typing after 1 second of inactivity
+            typingTimer = setTimeout(() => {
+              sendWebSocketMessage("stop_typing", {
+                conversation_id: currentConversationId,
+              });
+            }, 1000);
+          }
+        });
+
+      document
+        .getElementById("show-register")
+        .addEventListener("click", showRegisterForm);
+      document
+        .getElementById("show-login")
+        .addEventListener("click", showLoginForm);
+      document.getElementById("logout-btn").addEventListener("click", logout);
+
+      // Check for existing login on page load
+      checkExistingLogin();
+    </script>
+  </body>
+</html>

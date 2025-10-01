@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-Time Chat Application</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 1200px;
+        height: 80vh;
+        display: flex;
+        overflow: hidden;
+      }
+
+      .sidebar {
+        width: 300px;
+        background: #f8f9fa;
+        border-right: 1px solid #e9ecef;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .header {
+        padding: 20px;
+        background: #495057;
+        color: white;
+        text-align: center;
+      }
+
+      .auth-section {
+        padding: 20px;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .auth-form {
+        display: none;
+      }
+
+      .auth-form.active {
+        display: block;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #495057;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      .btn {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #007bff;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #0056b3;
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+        margin-top: 10px;
+      }
+
+      .btn-secondary:hover {
+        background: #545b62;
+      }
+
+      .btn-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .btn-success:hover {
+        background: #1e7e34;
+      }
+
+      .user-info {
+        padding: 20px;
+        background: #e9ecef;
+        text-align: center;
+      }
+
+      .chat-section {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .chat-header {
+        padding: 20px;
+        background: #495057;
+        color: white;
+        text-align: center;
+      }
+
+      .chat-rooms {
+        padding: 20px;
+        background: #f8f9fa;
+        border-bottom: 1px solid #e9ecef;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .room-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        background: white;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .room-item:hover {
+        background: #e9ecef;
+      }
+
+      .room-item.active {
+        background: #007bff;
+        color: white;
+      }
+
+      .chat-messages {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        background: white;
+      }
+
+      .message {
+        margin-bottom: 15px;
+        padding: 10px 15px;
+        border-radius: 15px;
+        max-width: 70%;
+        word-wrap: break-word;
+      }
+
+      .message.own {
+        background: #007bff;
+        color: white;
+        margin-left: auto;
+      }
+
+      .message.other {
+        background: #e9ecef;
+        color: #495057;
+      }
+
+      .message-header {
+        font-size: 12px;
+        opacity: 0.7;
+        margin-bottom: 5px;
+      }
+
+      .chat-input {
+        padding: 20px;
+        background: #f8f9fa;
+        border-top: 1px solid #e9ecef;
+        display: flex;
+        gap: 10px;
+      }
+
+      .chat-input input {
+        flex: 1;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 25px;
+        font-size: 14px;
+      }
+
+      .chat-input button {
+        padding: 10px 20px;
+        background: #007bff;
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+
+      .chat-input button:hover {
+        background: #0056b3;
+      }
+
+      .chat-input button:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+      }
+
+      .alert {
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+        font-size: 14px;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .typing-indicator {
+        font-style: italic;
+        color: #6c757d;
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      .hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <div class="header">
+          <h2>Chat Application</h2>
+        </div>
+
+        <div id="auth-section" class="auth-section">
+          <div id="login-form" class="auth-form active">
+            <h3>Login</h3>
+            <form id="loginForm">
+              <div class="form-group">
+                <label for="loginEmail">Email:</label>
+                <input type="email" id="loginEmail" required />
+              </div>
+              <div class="form-group">
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" required />
+              </div>
+              <button type="submit" class="btn btn-primary">Login</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="showRegisterForm()"
+              >
+                Register Instead
+              </button>
+            </form>
+          </div>
+
+          <div id="register-form" class="auth-form">
+            <h3>Register</h3>
+            <form id="registerForm">
+              <div class="form-group">
+                <label for="regFirstName">First Name:</label>
+                <input type="text" id="regFirstName" required />
+              </div>
+              <div class="form-group">
+                <label for="regLastName">Last Name:</label>
+                <input type="text" id="regLastName" required />
+              </div>
+              <div class="form-group">
+                <label for="regEmail">Email:</label>
+                <input type="email" id="regEmail" required />
+              </div>
+              <div class="form-group">
+                <label for="regUsername">Username:</label>
+                <input type="text" id="regUsername" required />
+              </div>
+              <div class="form-group">
+                <label for="regPassword">Password:</label>
+                <input type="password" id="regPassword" required />
+              </div>
+              <div class="form-group">
+                <label for="regPasswordConfirm">Confirm Password:</label>
+                <input type="password" id="regPasswordConfirm" required />
+              </div>
+              <button type="submit" class="btn btn-success">Register</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="showLoginForm()"
+              >
+                Login Instead
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <div id="user-info" class="user-info hidden">
+          <h3 id="userName"></h3>
+          <p id="userEmail"></p>
+          <button class="btn btn-secondary" onclick="logout()">Logout</button>
+        </div>
+
+        <div id="chat-rooms" class="chat-rooms hidden">
+          <h3>Chat Rooms</h3>
+          <button class="btn btn-primary" onclick="showCreateRoomForm()">
+            Create Room
+          </button>
+          <div id="rooms-list"></div>
+        </div>
+      </div>
+
+      <div class="chat-section">
+        <div class="chat-header">
+          <h2 id="current-room-name">Select a chat room</h2>
+        </div>
+
+        <div id="chat-messages" class="chat-messages hidden">
+          <div id="messages-container"></div>
+          <div id="typing-indicator" class="typing-indicator hidden"></div>
+        </div>
+
+        <div id="chat-input" class="chat-input hidden">
+          <input
+            type="text"
+            id="message-input"
+            placeholder="Type your message..."
+            maxlength="500"
+          />
+          <button id="send-button" onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let authToken = null;
+      let currentUser = null;
+      let currentRoomId = null;
+      let chatSocket = null;
+      let typingTimer = null;
+
+      const API_BASE = "http://localhost:8000/api";
+      const WS_BASE = "ws://localhost:8000/ws";
+
+      // Auth functions
+      async function login(email, password) {
+        try {
+          const response = await fetch(`${API_BASE}/auth/login/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            authToken = data.token;
+            currentUser = data.user;
+            showUserInfo();
+            loadChatRooms();
+            showAlert("Login successful!", "success");
+          } else {
+            showAlert(data.non_field_errors?.[0] || "Login failed", "error");
+          }
+        } catch (error) {
+          showAlert("Network error: " + error.message, "error");
+        }
+      }
+
+      async function register(formData) {
+        try {
+          const response = await fetch(`${API_BASE}/auth/register/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showAlert(
+              "Registration successful! Please check your email for verification.",
+              "success"
+            );
+            showLoginForm();
+          } else {
+            const errors = Object.values(data).flat();
+            showAlert(errors.join(", "), "error");
+          }
+        } catch (error) {
+          showAlert("Network error: " + error.message, "error");
+        }
+      }
+
+      function logout() {
+        authToken = null;
+        currentUser = null;
+        currentRoomId = null;
+        if (chatSocket) {
+          chatSocket.close();
+          chatSocket = null;
+        }
+        showAuthSection();
+        hideChatSection();
+      }
+
+      // Chat room functions
+      async function loadChatRooms() {
+        try {
+          const response = await fetch(`${API_BASE}/chat/rooms/`, {
+            headers: {
+              Authorization: `Token ${authToken}`,
+            },
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            displayChatRooms(data.results || []);
+          } else {
+            showAlert("Failed to load chat rooms", "error");
+          }
+        } catch (error) {
+          showAlert("Network error: " + error.message, "error");
+        }
+      }
+
+      function displayChatRooms(rooms) {
+        const roomsList = document.getElementById("rooms-list");
+        roomsList.innerHTML = "";
+
+        rooms.forEach((room) => {
+          const roomElement = document.createElement("div");
+          roomElement.className = "room-item";
+          roomElement.innerHTML = `
+                    <strong>${room.name || "Unnamed Room"}</strong>
+                    <br>
+                    <small>${room.participant_count} participants</small>
+                `;
+          roomElement.onclick = () => joinRoom(room.id, room.name);
+          roomsList.appendChild(roomElement);
+        });
+      }
+
+      async function createRoom(name, participantEmails = []) {
+        try {
+          const response = await fetch(`${API_BASE}/chat/rooms/`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${authToken}`,
+            },
+            body: JSON.stringify({
+              name: name,
+              participant_emails: participantEmails,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            showAlert("Chat room created successfully!", "success");
+            loadChatRooms();
+          } else {
+            const errors = Object.values(data).flat();
+            showAlert(errors.join(", "), "error");
+          }
+        } catch (error) {
+          showAlert("Network error: " + error.message, "error");
+        }
+      }
+
+      // WebSocket functions
+      function joinRoom(roomId, roomName) {
+        if (chatSocket) {
+          chatSocket.close();
+        }
+
+        currentRoomId = roomId;
+        document.getElementById("current-room-name").textContent =
+          roomName || "Chat Room";
+
+        // Update room selection
+        document.querySelectorAll(".room-item").forEach((item) => {
+          item.classList.remove("active");
+        });
+        event.target.closest(".room-item").classList.add("active");
+
+        // Connect to WebSocket
+        chatSocket = new WebSocket(`${WS_BASE}/chat/${roomId}/`);
+
+        chatSocket.onopen = function (e) {
+          console.log("WebSocket connected");
+          loadMessages();
+        };
+
+        chatSocket.onmessage = function (e) {
+          const data = JSON.parse(e.data);
+
+          if (data.type === "chat_message") {
+            displayMessage(data);
+          } else if (data.type === "typing") {
+            showTypingIndicator(data);
+          }
+        };
+
+        chatSocket.onclose = function (e) {
+          console.log("WebSocket disconnected");
+        };
+
+        chatSocket.onerror = function (e) {
+          console.error("WebSocket error:", e);
+          showAlert("Connection error", "error");
+        };
+
+        showChatSection();
+      }
+
+      async function loadMessages() {
+        try {
+          const response = await fetch(
+            `${API_BASE}/chat/rooms/${currentRoomId}/messages/`,
+            {
+              headers: {
+                Authorization: `Token ${authToken}`,
+              },
+            }
+          );
+
+          const data = await response.json();
+
+          if (response.ok) {
+            displayMessages(data.messages || []);
+          } else {
+            showAlert("Failed to load messages", "error");
+          }
+        } catch (error) {
+          showAlert("Network error: " + error.message, "error");
+        }
+      }
+
+      function displayMessages(messages) {
+        const container = document.getElementById("messages-container");
+        container.innerHTML = "";
+
+        messages.forEach((message) => {
+          displayMessage(message);
+        });
+      }
+
+      function displayMessage(message) {
+        const container = document.getElementById("messages-container");
+        const messageElement = document.createElement("div");
+
+        const isOwn = message.sender_id === currentUser.id;
+        messageElement.className = `message ${isOwn ? "own" : "other"}`;
+
+        messageElement.innerHTML = `
+                <div class="message-header">${message.sender_name} - ${new Date(
+          message.timestamp
+        ).toLocaleTimeString()}</div>
+                <div>${message.content}</div>
+            `;
+
+        container.appendChild(messageElement);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      function sendMessage() {
+        const input = document.getElementById("message-input");
+        const content = input.value.trim();
+
+        if (!content || !chatSocket) return;
+
+        chatSocket.send(
+          JSON.stringify({
+            type: "chat_message",
+            content: content,
+          })
+        );
+
+        input.value = "";
+        stopTyping();
+      }
+
+      function showTypingIndicator(data) {
+        const indicator = document.getElementById("typing-indicator");
+
+        if (data.is_typing && data.user_id !== currentUser.id) {
+          indicator.textContent = `${data.user_name} is typing...`;
+          indicator.classList.remove("hidden");
+        } else {
+          indicator.classList.add("hidden");
+        }
+      }
+
+      function startTyping() {
+        if (!chatSocket) return;
+
+        chatSocket.send(
+          JSON.stringify({
+            type: "typing",
+          })
+        );
+
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(stopTyping, 3000);
+      }
+
+      function stopTyping() {
+        if (!chatSocket) return;
+
+        chatSocket.send(
+          JSON.stringify({
+            type: "stop_typing",
+          })
+        );
+
+        clearTimeout(typingTimer);
+      }
+
+      // UI functions
+      function showAuthSection() {
+        document.getElementById("auth-section").classList.remove("hidden");
+        document.getElementById("user-info").classList.add("hidden");
+        document.getElementById("chat-rooms").classList.add("hidden");
+      }
+
+      function showUserInfo() {
+        document.getElementById("auth-section").classList.add("hidden");
+        document.getElementById("user-info").classList.remove("hidden");
+        document.getElementById("chat-rooms").classList.remove("hidden");
+
+        document.getElementById("userName").textContent = currentUser.full_name;
+        document.getElementById("userEmail").textContent = currentUser.email;
+      }
+
+      function showChatSection() {
+        document.getElementById("chat-messages").classList.remove("hidden");
+        document.getElementById("chat-input").classList.remove("hidden");
+      }
+
+      function hideChatSection() {
+        document.getElementById("chat-messages").classList.add("hidden");
+        document.getElementById("chat-input").classList.add("hidden");
+      }
+
+      function showLoginForm() {
+        document.getElementById("login-form").classList.add("active");
+        document.getElementById("register-form").classList.remove("active");
+      }
+
+      function showRegisterForm() {
+        document.getElementById("login-form").classList.remove("active");
+        document.getElementById("register-form").classList.add("active");
+      }
+
+      function showCreateRoomForm() {
+        const name = prompt("Enter chat room name:");
+        if (name) {
+          const emails = prompt(
+            "Enter participant emails (comma-separated, optional):"
+          );
+          const emailList = emails
+            ? emails
+                .split(",")
+                .map((e) => e.trim())
+                .filter((e) => e)
+            : [];
+          createRoom(name, emailList);
+        }
+      }
+
+      function showAlert(message, type) {
+        // Remove existing alerts
+        document.querySelectorAll(".alert").forEach((alert) => alert.remove());
+
+        const alert = document.createElement("div");
+        alert.className = `alert alert-${type}`;
+        alert.textContent = message;
+
+        const authSection = document.getElementById("auth-section");
+        authSection.insertBefore(alert, authSection.firstChild);
+
+        setTimeout(() => alert.remove(), 5000);
+      }
+
+      // Event listeners
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const email = document.getElementById("loginEmail").value;
+          const password = document.getElementById("loginPassword").value;
+          login(email, password);
+        });
+
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const formData = {
+            first_name: document.getElementById("regFirstName").value,
+            last_name: document.getElementById("regLastName").value,
+            email: document.getElementById("regEmail").value,
+            username: document.getElementById("regUsername").value,
+            password: document.getElementById("regPassword").value,
+            password_confirm:
+              document.getElementById("regPasswordConfirm").value,
+          };
+          register(formData);
+        });
+
+      document
+        .getElementById("message-input")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            sendMessage();
+          } else {
+            startTyping();
+          }
+        });
+
+      document
+        .getElementById("message-input")
+        .addEventListener("input", function (e) {
+          if (e.target.value.trim()) {
+            startTyping();
+          } else {
+            stopTyping();
+          }
+        });
+    </script>
+  </body>
+</html>
