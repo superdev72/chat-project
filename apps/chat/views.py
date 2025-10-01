@@ -34,7 +34,8 @@ class UserListView(generics.ListAPIView):
             queryset = queryset.filter(
                 models.Q(email__icontains=search)
                 | models.Q(username__icontains=search)
-                | models.Q(full_name__icontains=search)
+                | models.Q(first_name__icontains=search)
+                | models.Q(last_name__icontains=search)
             )
 
         return queryset.order_by("username")
