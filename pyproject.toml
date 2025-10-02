@@ -11,6 +11,8 @@ extend-exclude = '''
   | \.mypy_cache
   | \.tox
   | \.venv
+  | venv
+  | test_venv
   | build
   | dist
   | migrations
