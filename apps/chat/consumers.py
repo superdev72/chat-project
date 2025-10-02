@@ -18,6 +18,12 @@ User = get_user_model()
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Initialize throttling for message sending (1 message per second)
+        self.message_timestamps = []
+        self.max_messages_per_second = 1
+
     async def connect(self):
         self.user_id = self.scope["url_route"]["kwargs"]["user_id"]
 
@@ -34,10 +40,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
 
         self.user_group_name = f"user_{self.user_id}"
-
-        # Initialize throttling for message sending (1 message per second)
-        self.message_timestamps = []
-        self.max_messages_per_second = 1
 
         # Join user group
         await self.channel_layer.group_add(self.user_group_name, self.channel_name)
