@@ -60,9 +60,7 @@ class RedisMessageService:
         conversation_key = f"conversation:{conversation_id}:messages"
 
         # Get message IDs from sorted set (most recent first)
-        message_ids = self.redis_client.zrevrange(
-            conversation_key, offset, offset + limit - 1
-        )
+        message_ids = self.redis_client.zrevrange(conversation_key, offset, offset + limit - 1)
 
         messages = []
         for message_id in message_ids:

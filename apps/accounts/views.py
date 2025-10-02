@@ -37,8 +37,7 @@ class UserRegistrationView(generics.CreateAPIView):
         return Response(
             {
                 "message": (
-                    "User created successfully. Please check your email "
-                    "for verification."
+                    "User created successfully. Please check your email " "for verification."
                 ),
                 "user_id": str(user.id),
             },
@@ -128,16 +127,13 @@ def verify_email_view(request, token):
                 {
                     "user": user,
                     "message": (
-                        "Email verified successfully! You can now log in "
-                        "to your account."
+                        "Email verified successfully! You can now log in " "to your account."
                     ),
                 },
             )
 
         # For POST requests (API calls), return JSON
-        return Response(
-            {"message": "Email verified successfully"}, status=status.HTTP_200_OK
-        )
+        return Response({"message": "Email verified successfully"}, status=status.HTTP_200_OK)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -155,9 +151,7 @@ def resend_verification_email_view(request):
     # Generate new token and send email
     user.generate_new_verification_token()
 
-    verification_url = (
-        f"{settings.SITE_URL}/api/auth/verify-email/{user.verification_token}/"
-    )
+    verification_url = f"{settings.SITE_URL}/api/auth/verify-email/{user.verification_token}/"
 
     html_message = render_to_string(
         "emails/verification_email.html",
@@ -178,9 +172,7 @@ def resend_verification_email_view(request):
         fail_silently=False,
     )
 
-    return Response(
-        {"message": "Verification email sent successfully"}, status=status.HTTP_200_OK
-    )
+    return Response({"message": "Verification email sent successfully"}, status=status.HTTP_200_OK)
 
 
 @api_view(["POST"])

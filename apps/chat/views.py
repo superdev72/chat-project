@@ -24,9 +24,7 @@ class UserListView(generics.ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        queryset = User.objects.filter(is_verified=True).exclude(
-            id=self.request.user.id
-        )
+        queryset = User.objects.filter(is_verified=True).exclude(id=self.request.user.id)
 
         # Search functionality
         search = self.request.query_params.get("search", None)
@@ -67,9 +65,7 @@ def conversation_detail_view(request, user_id):
         ).first()
 
         if not conversation:
-            return Response(
-                {"error": "No conversation found"}, status=status.HTTP_404_NOT_FOUND
-            )
+            return Response({"error": "No conversation found"}, status=status.HTTP_404_NOT_FOUND)
 
         serializer = ConversationSerializer(conversation, context={"request": request})
         return Response(serializer.data)
@@ -84,9 +80,7 @@ def conversation_detail_view(request, user_id):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        conversation, created = Conversation.get_or_create_conversation(
-            request.user, other_user
-        )
+        conversation, created = Conversation.get_or_create_conversation(request.user, other_user)
         serializer = ConversationSerializer(conversation, context={"request": request})
 
         return Response(
@@ -110,9 +104,9 @@ def get_messages_view(request, conversation_id):
     messages = redis_service.get_chat_messages(conversation_id)
 
     # Mark messages as read for the requesting user
-    Message.objects.filter(
-        conversation=conversation, receiver=request.user, is_read=False
-    ).update(is_read=True)
+    Message.objects.filter(conversation=conversation, receiver=request.user, is_read=False).update(
+        is_read=True
+    )
 
     serializer = MessageListSerializer(messages, many=True)
     return Response(serializer.data)
@@ -161,6 +155,4 @@ def delete_message_view(request, message_id):
     # Delete from Redis
     redis_service.delete_message(message_id)
 
-    return Response(
-        {"message": "Message deleted successfully"}, status=status.HTTP_200_OK
-    )
+    return Response({"message": "Message deleted successfully"}, status=status.HTTP_200_OK)

@@ -81,9 +81,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         content = data.get("content")
 
         if not conversation_id or not content:
-            await self.send(
-                text_data=json.dumps({"error": "Missing conversation_id or content"})
-            )
+            await self.send(text_data=json.dumps({"error": "Missing conversation_id or content"}))
             return
 
         # Get conversation and validate access

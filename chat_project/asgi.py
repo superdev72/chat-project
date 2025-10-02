@@ -22,8 +22,6 @@ from apps.chat.routing import websocket_urlpatterns  # noqa: E402
 application = ProtocolTypeRouter(
     {
         "http": get_asgi_application(),
-        "websocket": TokenAuthMiddleware(
-            AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
-        ),
+        "websocket": TokenAuthMiddleware(AuthMiddlewareStack(URLRouter(websocket_urlpatterns))),
     }
 )

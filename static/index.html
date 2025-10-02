@@ -266,7 +266,6 @@
         <div class="header">
           <h2>Chat Application</h2>
         </div>
-
         <div id="auth-section" class="auth-section">
           <div id="login-form" class="auth-form active">
             <h3>Login</h3>
@@ -280,16 +279,11 @@
                 <input type="password" id="loginPassword" required />
               </div>
               <button type="submit" class="btn btn-primary">Login</button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                onclick="showRegisterForm()"
-              >
+              <button type="button" class="btn btn-secondary" onclick="showRegisterForm()">
                 Register Instead
               </button>
             </form>
           </div>
-
           <div id="register-form" class="auth-form">
             <h3>Register</h3>
             <form id="registerForm">
@@ -318,54 +312,38 @@
                 <input type="password" id="regPasswordConfirm" required />
               </div>
               <button type="submit" class="btn btn-success">Register</button>
-              <button
-                type="button"
-                class="btn btn-secondary"
-                onclick="showLoginForm()"
-              >
-                Login Instead
-              </button>
+              <button type="button" class="btn btn-secondary" onclick="showLoginForm()">Login Instead</button>
             </form>
           </div>
         </div>
-
         <div id="user-info" class="user-info hidden">
           <h3 id="userName"></h3>
           <p id="userEmail"></p>
           <button class="btn btn-secondary" onclick="logout()">Logout</button>
         </div>
-
         <div id="chat-rooms" class="chat-rooms hidden">
           <h3>Chat Rooms</h3>
-          <button class="btn btn-primary" onclick="showCreateRoomForm()">
-            Create Room
-          </button>
+          <button class="btn btn-primary" onclick="showCreateRoomForm()">Create Room</button>
           <div id="rooms-list"></div>
         </div>
       </div>
-
       <div class="chat-section">
         <div class="chat-header">
           <h2 id="current-room-name">Select a chat room</h2>
         </div>
-
         <div id="chat-messages" class="chat-messages hidden">
           <div id="messages-container"></div>
           <div id="typing-indicator" class="typing-indicator hidden"></div>
         </div>
-
         <div id="chat-input" class="chat-input hidden">
-          <input
-            type="text"
-            id="message-input"
-            placeholder="Type your message..."
-            maxlength="500"
-          />
+          <input type="text"
+                 id="message-input"
+                 placeholder="Type your message..."
+                 maxlength="500" />
           <button id="send-button" onclick="sendMessage()">Send</button>
         </div>
       </div>
     </div>
-
     <script>
       let authToken = null;
       let currentUser = null;

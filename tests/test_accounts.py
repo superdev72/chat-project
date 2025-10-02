@@ -135,9 +135,7 @@ class EmailVerificationTestCase(APITestCase):
 
     def test_successful_email_verification(self):
         """Test successful email verification"""
-        verification_url = reverse(
-            "verify-email", kwargs={"token": self.user.verification_token}
-        )
+        verification_url = reverse("verify-email", kwargs={"token": self.user.verification_token})
 
         response = self.client.post(verification_url)
 
@@ -161,9 +159,7 @@ class EmailVerificationTestCase(APITestCase):
         self.user.is_verified = True
         self.user.save()
 
-        verification_url = reverse(
-            "verify-email", kwargs={"token": self.user.verification_token}
-        )
+        verification_url = reverse("verify-email", kwargs={"token": self.user.verification_token})
 
         response = self.client.post(verification_url)
 

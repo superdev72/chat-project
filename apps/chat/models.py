@@ -10,12 +10,8 @@ class Conversation(models.Model):
     """Represents a conversation between two users"""
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    user1 = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="conversations_as_user1"
-    )
-    user2 = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="conversations_as_user2"
-    )
+    user1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="conversations_as_user1")
+    user2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="conversations_as_user2")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -55,12 +51,8 @@ class Message(models.Model):
     conversation = models.ForeignKey(
         Conversation, on_delete=models.CASCADE, related_name="messages"
     )
-    sender = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="sent_messages"
-    )
-    receiver = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="received_messages"
-    )
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name="sent_messages")
+    receiver = models.ForeignKey(User, on_delete=models.CASCADE, related_name="received_messages")
     message_id = models.CharField(max_length=255, unique=True)  # Redis key
     created_at = models.DateTimeField(auto_now_add=True)
     is_deleted = models.BooleanField(default=False)

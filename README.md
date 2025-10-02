@@ -241,6 +241,50 @@ chatSocket.send(
 );
 ```
 
+## Code Quality
+
+This project uses multiple code quality tools to ensure consistent code style and catch potential issues.
+
+### Code Quality Tools
+
+- **Black**: Code formatter (line length: 100)
+- **isort**: Import sorter (line length: 100)
+- **flake8**: Python linter (max line length: 100, max complexity: 10)
+- **djlint**: Django template linter and formatter (max line length: 100)
+
+### Check Code Quality
+
+```bash
+# Run all code quality checks
+./scripts/lint.sh
+
+# Individual checks
+black --check .          # Check Python formatting
+isort --check .          # Check import sorting
+flake8 .                 # Check Python linting
+djlint --check .         # Check template formatting
+```
+
+### Auto-fix Code Quality Issues
+
+```bash
+# Run all formatters
+./scripts/format.sh
+
+# Individual formatters
+black .                  # Format Python code
+isort .                  # Sort imports
+djlint --reformat .      # Format templates
+```
+
+### Configuration Files
+
+- `pyproject.toml`: Black, isort, and djlint configuration
+- `.flake8`: Flake8 linter configuration
+- `.djlintrc`: Additional djlint configuration
+
+For more information, see [CODE_QUALITY.md](CODE_QUALITY.md).
+
 ## Testing
 
 ### Run Tests

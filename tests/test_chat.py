@@ -45,13 +45,9 @@ class ConversationTestCase(APITestCase):
 
         # Create conversation with proper ordering (smaller ID first)
         if self.user1.id < self.user2.id:
-            self.conversation = Conversation.objects.create(
-                user1=self.user1, user2=self.user2
-            )
+            self.conversation = Conversation.objects.create(user1=self.user1, user2=self.user2)
         else:
-            self.conversation = Conversation.objects.create(
-                user1=self.user2, user2=self.user1
-            )
+            self.conversation = Conversation.objects.create(user1=self.user2, user2=self.user1)
 
         self.client.force_authenticate(user=self.user1)
 
@@ -124,9 +120,7 @@ class MessageTestCase(APITestCase):
             is_verified=True,
         )
 
-        self.conversation = Conversation.objects.create(
-            user1=self.user1, user2=self.user2
-        )
+        self.conversation = Conversation.objects.create(user1=self.user1, user2=self.user2)
 
         self.client.force_authenticate(user=self.user1)
 
