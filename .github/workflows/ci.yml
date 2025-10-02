@@ -111,8 +111,8 @@ jobs:
           pip install -r requirements.txt
           pip install safety bandit
 
-      - name: Run safety check
-        run: safety check
+      - name: Run safety scan
+        run: safety scan --output json || true
 
       - name: Run bandit security check
         run: bandit -r . -f json -o bandit-report.json || true

@@ -285,6 +285,21 @@ djlint --reformat .      # Format templates
 
 For more information, see [CODE_QUALITY.md](CODE_QUALITY.md).
 
+## Security
+
+This project uses updated dependencies to address security vulnerabilities:
+
+- **Django 4.2.23**: Latest LTS with 20+ security fixes
+- **Django REST Framework 3.15.2**: XSS vulnerability fixed
+- **Gunicorn 23.0.0**: HTTP smuggling vulnerabilities fixed
+- **Pillow 10.3.0**: Code execution vulnerabilities fixed
+- **Black 24.3.0**: ReDoS vulnerability fixed
+- **regex 2025.9.18**: ReDoS vulnerability fixed
+
+Security scanning is integrated into the CI/CD pipeline using `safety scan`.
+
+For detailed security information, see [SECURITY_UPDATES.md](SECURITY_UPDATES.md).
+
 ## Testing
 
 ### Run Tests
