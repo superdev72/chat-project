@@ -231,6 +231,11 @@ LOGGING = {
             "level": "INFO",
             "propagate": False,
         },
+        "apps.chat.consumers": {
+            "handlers": ["api_file", "console"],
+            "level": "INFO",
+            "propagate": False,
+        },
     },
 }
 

@@ -1,7 +1,8 @@
 from rest_framework import generics, status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import UserRateThrottle
 
 from django.db import models
 from django.shortcuts import get_object_or_404
@@ -15,6 +16,12 @@ from apps.chat.serializers import (
     UserSerializer,
 )
 from apps.chat.services import redis_service
+
+
+class MessageThrottle(UserRateThrottle):
+    """Custom throttle for message sending - 10 messages per minute"""
+
+    scope = "message"
 
 
 class UserListView(generics.ListAPIView):
@@ -114,6 +121,7 @@ def get_messages_view(request, conversation_id):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
+@throttle_classes([MessageThrottle])
 def send_message_view(request, conversation_id):
     """Send a message in a conversation"""
 

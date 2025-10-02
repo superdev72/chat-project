@@ -1,4 +1,6 @@
 import json
+import logging
+import time
 from datetime import datetime
 
 from channels.db import database_sync_to_async
@@ -9,6 +11,8 @@ from django.contrib.auth.models import AnonymousUser
 
 from apps.chat.models import Conversation, Message
 from apps.chat.services import redis_service
+
+logger = logging.getLogger("apps.chat.consumers")
 
 User = get_user_model()
 
@@ -31,10 +35,21 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         self.user_group_name = f"user_{self.user_id}"
 
+        # Initialize throttling for message sending (1 message per second)
+        self.message_timestamps = []
+        self.max_messages_per_second = 1
+
         # Join user group
         await self.channel_layer.group_add(self.user_group_name, self.channel_name)
 
         await self.accept()
+
+        # Log WebSocket connection
+        logger.info(
+            f"WebSocket Connected - User: {self.user.email}, "
+            f"User ID: {self.user_id}, "
+            f"IP: {self.get_client_ip()}"
+        )
 
         # Notify other users that this user is online
         await self.channel_layer.group_send(
@@ -57,6 +72,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "type": "user_offline",
                 "user_id": self.user_id,
             },
+        )
+
+        # Log WebSocket disconnection
+        logger.info(
+            f"WebSocket Disconnected - User: {self.user.email}, "
+            f"User ID: {self.user_id}, "
+            f"Close Code: {close_code}"
         )
 
     async def receive(self, text_data):
@@ -84,6 +106,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({"error": "Missing conversation_id or content"}))
             return
 
+        # Check throttling (1 message per second)
+        if not self.check_message_throttle():
+            await self.send(
+                text_data=json.dumps(
+                    {"error": "Rate limit exceeded. Please wait before sending another message."}
+                )
+            )
+            logger.warning(
+                f"Message throttled - User: {self.user.email}, "
+                f"User ID: {self.user_id}, "
+                f"Conversation: {conversation_id}"
+            )
+            return
+
         # Get conversation and validate access
         conversation = await self.get_conversation(conversation_id)
         if not conversation:
@@ -94,6 +130,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if not await self.is_user_in_conversation(conversation, self.user):
             await self.send(text_data=json.dumps({"error": "Access denied"}))
             return
+
+        # Log message sending
+        logger.info(
+            f"WebSocket Message Sent - User: {self.user.email}, "
+            f"User ID: {self.user_id}, "
+            f"Conversation: {conversation_id}, "
+            f"Content Length: {len(content)}"
+        )
 
         # Create message in database and Redis
         message_data = await self.create_message(conversation, content)
@@ -288,3 +332,35 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def update_conversation_timestamp(self, conversation):
         conversation.save()
+
+    def check_message_throttle(self):
+        """Check if user can send a message based on throttling rules (1 per second)"""
+        current_time = time.time()
+
+        # Remove timestamps older than 1 second
+        self.message_timestamps = [ts for ts in self.message_timestamps if current_time - ts < 1.0]
+
+        # Check if we're under the limit
+        if len(self.message_timestamps) >= self.max_messages_per_second:
+            return False
+
+        # Add current timestamp
+        self.message_timestamps.append(current_time)
+        return True
+
+    def get_client_ip(self):
+        """Get client IP address from WebSocket scope"""
+        # Try to get IP from various headers
+        headers = self.scope.get("headers", [])
+        for header_name, header_value in headers:
+            if header_name == b"x-forwarded-for":
+                return header_value.decode("utf-8").split(",")[0].strip()
+            elif header_name == b"x-real-ip":
+                return header_value.decode("utf-8")
+
+        # Fallback to client info
+        client_info = self.scope.get("client")
+        if client_info:
+            return client_info[0]
+
+        return "unknown"
